@@ -24,7 +24,6 @@ do
 {
     $url_r = $url . ($page > 1 ? "&page=$page" : "");
     $html = $proxy->curl($url_r);
-    //$html = file_get_contents('/application/public/curl_output_c9dd39c471ac54db.html');
 
     $curlOutputFilename = sprintf(
         'curl_output_%s.html',
