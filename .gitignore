@@ -1,0 +1,7 @@
+seen.json
+config.php
+vendor/
+
+public/curl_output_*
+
+/supervisord*

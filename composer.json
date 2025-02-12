@@ -1,0 +1,17 @@
+{
+    "repositories": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/knork-fork/php-simple-html-dom-parser"
+        }
+    ],
+    "require": {
+        "knork-fork/php-simple-html-dom-parser": "dev-master",
+        "cweagans/composer-patches": "^1.7"
+    },
+    "config": {
+        "allow-plugins": {
+            "cweagans/composer-patches": true
+        }
+    }
+}
