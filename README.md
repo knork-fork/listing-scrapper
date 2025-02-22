@@ -1,6 +1,11 @@
 Listing Scrapper
 ========================
 
+Config
+------
+
+Make a copy of `.env` as `.env.local` and set your own values.
+
 Installation
 ------------
 
@@ -20,4 +25,6 @@ Scrapper is running automatically on container start.
 
 Go to http://localhost:35000/ to see all the results manually.
 
-to-do 2: explain config.php and dist
+`DISCORD_WEBHOOK_PING` will be pinged with script uptime.
+
+Errors and found listings will be sent to `DISCORD_WEBHOOK`.
