@@ -55,7 +55,7 @@ do
 
     if ($parsedHtml === false) {
         file_put_contents($curlOutputPath, $html);
-        sendToDiscord(Environment::getStringEnv('DISCORD_WEBHOOK'), Environment::getStringEnv('USER_ID') . " Script died, HTML parsing failed!\n[".date(DATE_RFC2822)."]\nSee output: $curlOutputUrl");
+        sendToDiscord(Environment::getStringEnv('DISCORD_WEBHOOK'), Environment::getStringEnv('USER_ID') . " HTML parsing for <$url_r> failed!\n[".date(DATE_RFC2822)."]\nSee output: $curlOutputUrl");
         die();
     } else {
         sendToDiscord(Environment::getStringEnv('DISCORD_WEBHOOK_PING'), "Normal response returned [".date(DATE_RFC2822)."]");
