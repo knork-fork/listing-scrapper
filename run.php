@@ -33,8 +33,11 @@ do
     $curlOutputPath = '/application/public/' . $curlOutputFilename;
     $curlOutputUrl = 'http://localhost:35000/' . $curlOutputFilename;
 
-    if (strstr($html, "302 Found"))
-    {
+    if (str_starts_with($html, 'Curl error:')) {
+        file_put_contents($curlOutputPath, $html);
+        sendToDiscord(Environment::getStringEnv('DISCORD_WEBHOOK'), Environment::getStringEnv('USER_ID') . " Script died, `Curl error` returned!\n[".date(DATE_RFC2822)."]\nSee output: $curlOutputUrl");
+        die();
+    } elseif (strstr($html, "302 Found")) {
         $url = $proxy->curl($url_r, true);
         file_put_contents($curlOutputPath, $html);
         sendToDiscord(Environment::getStringEnv('DISCORD_WEBHOOK'), Environment::getStringEnv('USER_ID') . " Script died, `302 Found` returned!\n[".date(DATE_RFC2822)."]\nSee output: $curlOutputUrl");
@@ -87,7 +90,7 @@ do
     }
     $page ++;
     // It can't handle more than 2-3 connections...
-    if ($page > 2)
+    if ($page > (int) Environment::getStringEnv('PAGE_LIMIT'))
         break;
     sleep(rand(5,13));
 

@@ -1,13 +1,28 @@
 <?php
 
+use KnorkFork\LoadEnvironment\Environment;
+
+require_once __DIR__ . '/vendor/knorkfork/load-environment/src/Environment.php';
+
 class Proxy
 {
+    private const DEFAULT_PROXY = 'localhost:9050';
+
 	private $ch, $proxy;
 
 	function __construct()
     {
-        system("(echo authenticate '\"\"'; echo signal newnym; echo quit) | nc localhost 9051 > /dev/null 2>&1");
-        sleep(15);
+        Environment::load(__DIR__ . '/.env');
+
+        if (Environment::getStringEnv('PROXY') !== self::DEFAULT_PROXY) {
+            // Use third party proxy
+            $this->proxy = Environment::getStringEnv('PROXY');
+        } else {
+            // Use local tor proxy
+            $this->proxy = self::DEFAULT_PROXY;
+            system("(echo authenticate '\"\"'; echo signal newnym; echo quit) | nc localhost 9051 > /dev/null 2>&1");
+            sleep(15);
+        }
 
         $this->ch = curl_init();
 
@@ -16,11 +31,12 @@ class Proxy
         curl_setopt($this->ch, CURLOPT_HEADER, 1);
         curl_setopt($this->ch, CURLOPT_HTTPPROXYTUNNEL, 1);
         curl_setopt( $this->ch, CURLOPT_RETURNTRANSFER, true );
-        curl_setopt($this->ch, CURLOPT_PROXY, "localhost:9050");
+        curl_setopt($this->ch, CURLOPT_PROXY, $this->proxy);
         curl_setopt( $this->ch, CURLOPT_FOLLOWLOCATION, true );
         curl_setopt( $this->ch, CURLOPT_SSL_VERIFYPEER, false );
+        curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($this->ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5_HOSTNAME);
-        curl_setopt($this->ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/17.1 Safari/537.36');
+        curl_setopt($this->ch, CURLOPT_USERAGENT, Environment::getStringEnv('USER_AGENT'));
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, [
             'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Accept-Language: en-US,en;q=0.5',
@@ -43,7 +59,14 @@ class Proxy
             return $matches[1];
         }
 
-        return curl_exec( $this->ch );
+        $response = curl_exec($this->ch);
+
+        if (curl_errno($this->ch))
+        {
+            return 'Curl error: ' . curl_error($this->ch);
+        }
+
+        return $response;
     }
 
     function __destruct()
