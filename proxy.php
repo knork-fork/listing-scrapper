@@ -29,7 +29,6 @@ class Proxy
         // this 'should' work
         // sometimes it throws a captcha, follow /var/www/html/curl_output.html
         curl_setopt($this->ch, CURLOPT_HEADER, 1);
-        curl_setopt($this->ch, CURLOPT_HTTPPROXYTUNNEL, 1);
         curl_setopt( $this->ch, CURLOPT_RETURNTRANSFER, true );
         curl_setopt($this->ch, CURLOPT_PROXY, $this->proxy);
         curl_setopt( $this->ch, CURLOPT_FOLLOWLOCATION, true );
