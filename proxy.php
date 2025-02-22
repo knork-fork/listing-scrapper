@@ -20,7 +20,13 @@ class Proxy
         curl_setopt( $this->ch, CURLOPT_FOLLOWLOCATION, true );
         curl_setopt( $this->ch, CURLOPT_SSL_VERIFYPEER, false );
         curl_setopt($this->ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5_HOSTNAME);
-        curl_setopt($this->ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.83 Safari/537.36');
+        curl_setopt($this->ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/17.1 Safari/537.36');
+        curl_setopt($this->ch, CURLOPT_HTTPHEADER, [
+            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language: en-US,en;q=0.5',
+            'Connection: keep-alive',
+            'Upgrade-Insecure-Requests: 1'
+        ]);
     }
 
     public function curl( $url, $get_location_url = null )
