@@ -34,7 +34,15 @@ class Proxy
         curl_setopt( $this->ch, CURLOPT_FOLLOWLOCATION, true );
         curl_setopt( $this->ch, CURLOPT_SSL_VERIFYPEER, false );
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($this->ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5_HOSTNAME);
+
+        if (Environment::getStringEnv('USE_PROXY_DNS') === 'true') {
+            // DNS goes via proxy
+            curl_setopt($this->ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5_HOSTNAME);
+        } else {
+            // DNS locally
+            curl_setopt($this->ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+        }
+
         curl_setopt($this->ch, CURLOPT_USERAGENT, Environment::getStringEnv('USER_AGENT'));
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, [
             'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
