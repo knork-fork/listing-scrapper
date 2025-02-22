@@ -47,14 +47,21 @@ do
         file_put_contents($curlOutputPath, $html);
         sendToDiscord(Environment::getStringEnv('DISCORD_WEBHOOK'), Environment::getStringEnv('USER_ID') . " Script died, `Error 400 (Bad Request)` returned!\n[".date(DATE_RFC2822)."]\nSee output: $curlOutputUrl");
         die();
-    } else {
-        sendToDiscord(Environment::getStringEnv('DISCORD_WEBHOOK_PING'), "Normal response returned [".date(DATE_RFC2822)."]");
     }
-    $html = HtmlDomParser::str_get_html($html);
+
+    $parsedHtml = HtmlDomParser::str_get_html($html);
     $i = 0;
     $keep_running = false;
 
-    foreach ($html->find('li.EntityList-item') as $stan)
+    if ($parsedHtml === false) {
+        file_put_contents($curlOutputPath, $html);
+        sendToDiscord(Environment::getStringEnv('DISCORD_WEBHOOK'), Environment::getStringEnv('USER_ID') . " Script died, HTML parsing failed!\n[".date(DATE_RFC2822)."]\nSee output: $curlOutputUrl");
+        die();
+    } else {
+        sendToDiscord(Environment::getStringEnv('DISCORD_WEBHOOK_PING'), "Normal response returned [".date(DATE_RFC2822)."]");
+    }
+
+    foreach ($parsedHtml->find('li.EntityList-item') as $stan)
     {
         if (!strstr($stan->class,"EntityList-item--VauVau") && !strstr($stan->class,"EntityList-item--Regular")) continue;
 
