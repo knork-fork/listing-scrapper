@@ -6,3 +6,4 @@ public/curl_output_*
 
 /supervisord*
 composer.lock
+.env.local

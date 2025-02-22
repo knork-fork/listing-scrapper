@@ -3,17 +3,18 @@
 echo "Initializing...\n";
 require __DIR__ . '/vendor/autoload.php';
 require("proxy.php");
-require("config.php");
 require("webhook.php");
 
+use KnorkFork\LoadEnvironment\Environment;
 use Sunra\PhpSimple\HtmlDomParser;
+
+Environment::load(__DIR__ . '/.env');
 
 date_default_timezone_set('Europe/Zagreb');
 
 $proxy = new Proxy();
 $seen = file_exists("seen.json") ? json_decode(file_get_contents("seen.json")) : [];
-$base_url = 'https://www.test.hr';
-$url = $base_url . $request;
+$url = Environment::getStringEnv('BASE_URL') . Environment::getStringEnv('SEARCH_URL');
 $page = 1;
 $new = 0;
 $newText = "";
@@ -68,12 +69,12 @@ do
         }
 
         if (isset($stan->attr["data-href"]) &&
-            strstr($stan->attr["data-href"],'/nekretnine/') &&
+            strstr($stan->attr["data-href"], Environment::getStringEnv('ITEM_URL_PREFIX')) &&
             !in_array($stan->attr["data-href"], $seen))
         {
             $keep_running = true;
             $seen []= $stan->attr["data-href"];
-            $newText .= $base_url . $stan->attr["data-href"] . "\n";
+            $newText .= Environment::getStringEnv('BASE_URL') . $stan->attr["data-href"] . "\n";
             $new++;
         }
     }

@@ -1,6 +1,10 @@
 <?php
 
-$base_url = 'https://www.test.hr';
+use KnorkFork\LoadEnvironment\Environment;
+
+require_once __DIR__ . '/vendor/knorkfork/load-environment/src/Environment.php';
+
+Environment::load(__DIR__ . '/.env');
 
 $seen = file_exists("seen.json") ? json_decode(file_get_contents("seen.json")) : [];
 
@@ -20,5 +24,5 @@ usort($seen, "cmp");
 
 foreach ($seen as $s)
 {
-    echo  $base_url.$s."\n";
+    echo Environment::getStringEnv('BASE_URL').$s."\n";
 }
